@@ -133,73 +133,65 @@ flagButton.MouseButton1Click:Connect(function()
     sideFrame.Visible = not sideFrame.Visible
 end)
 
--- 🔽 Teleport List 🔽
-local teleportList = {
-    {name = "Teleport Pos 1", pos = Vector3.new(-62.219, 61.272, -1012.715)},
-    {name = "Teleport Pos 2", pos = Vector3.new(-518.263, 31.418, -1449.677)},
-    {name = "Teleport Pos 3", pos = Vector3.new(-234.331, 401.994, 4034.662)},
-    {name = "Teleport Pos 4", pos = Vector3.new(-260.452, 339.807, 4382.458)},
-    {name = "Teleport Pos 5", pos = Vector3.new(-350.004, 331.38, 4563.691)},
-    {name = "Teleport Pos 6", pos = Vector3.new(-863.008, 228.044, 5330.454)},
-    {name = "Teleport Pos 7", pos = Vector3.new(-1381.331, 504.732, 6360.716)},
-    {name = "Teleport Pos 8", pos = Vector3.new(-1521.099, 537.663, 6747.521)},
-    {name = "Teleport Pos 9", pos = Vector3.new(-1489.38, 546.493, 7075.592)},
-    {name = "Teleport Pos 10", pos = Vector3.new(-892.735, 481.662, 8299.804)},
-    {name = "Teleport Pos 11", pos = Vector3.new(-497.311, 608.767, 8792.895)},
-    {name = "Teleport Pos 12", pos = Vector3.new(-303.358, 611.169, 8947.14)},
-    {name = "Teleport Pos 13", pos = Vector3.new(-121.753, 599.254, 9166.275)},
-    {name = "Teleport Pos 14", pos = Vector3.new(-9.714, 637.725, 9324.404)},
-    {name = "Teleport Pos 15", pos = Vector3.new(214.159, 810.763, 10017.791)},
-    {name = "PUNCAK", pos = Vector3.new(546.483, 1310.881, 10933.145)},
-    {name = "BASECAMP", pos = Vector3.new(47.406, 8.707, 314.532)},
-}
-
--- 🔽 Fungsi bikin tombol teleport otomatis 🔽
-local function makeTeleportButton(name, pos)
-    local tpButton = Instance.new("TextButton")
-    tpButton.Size = UDim2.new(0, 140, 0, 35)
-    tpButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    tpButton.Text = name
-    tpButton.TextColor3 = Color3.new(1, 1, 1)
-    tpButton.Font = Enum.Font.SourceSansBold
-    tpButton.TextSize = 14
-    tpButton.Parent = scrollFrame
-
-    local tpCorner = Instance.new("UICorner")
-    tpCorner.CornerRadius = UDim.new(0, 8)
-    tpCorner.Parent = tpButton
-
-    tpButton.MouseButton1Click:Connect(function()
-        local character = player.Character
-        if character and character:FindFirstChild("HumanoidRootPart") then
-            character.HumanoidRootPart.CFrame = CFrame.new(pos)
-        end
-    end)
-end
-
--- Buat semua tombol dari daftar
-for _, data in ipairs(teleportList) do
-    makeTeleportButton(data.name, data.pos)
-end
-
 -- 🔽 AUTO FARM SYSTEM (Tombol SUMMIT) 🔽
-local position1 = Vector3.new(625.27, 1799.83, 3432.84)
-local position2 = Vector3.new(780.47, 2183.38, 3945.07)
+local player = game.Players.LocalPlayer
 local teleporting = false
 
+-- 📍 Titik-titik teleportasi
+local teleportPoints = {
+    Vector3.new(-62.219, 61.272, -1012.715),
+    Vector3.new(-518.263, 31.418, -1449.677),
+    Vector3.new(-1098.454, 99.032, -1666.814),
+    Vector3.new(-1384.369, 91.197, -2035.763),
+    Vector3.new(-1961.388, 20.663, -2010.37),
+    Vector3.new(-2317.07, 183.819, -2410.748),
+    Vector3.new(-2692.163, 236.241, -2892.914),
+    Vector3.new(-3001.781, 376.222, -3349.222),
+    Vector3.new(-3702.666, 666.001, -4244.088),
+    Vector3.new(-3904.514, 826.714, -5038.68),
+    Vector3.new(-3728.446, 949.734, -5453.592),
+    Vector3.new(-3140.74, 1281.464, -6435.697),
+    Vector3.new(-2533.653, 1579.135, -6521.36),
+    Vector3.new(-2289.774, 1750.859, -7903.055),
+    Vector3.new(-2364.218, 2064.646, -9753.298),
+    Vector3.new(-2437.124, 2137.905, -10295.655), -- Puncak
+}
+local basecamp = Vector3.new(47.406, 8.707, 314.532)
+
+-- ⚡ Fungsi teleport
 local function teleportTo(pos)
-    local char = player.Character
+    local char = player.Character or player.CharacterAdded:Wait()
     if char and char:FindFirstChild("HumanoidRootPart") then
         char.HumanoidRootPart.CFrame = CFrame.new(pos)
     end
 end
 
-local function autoFarmLoop()
-    teleportTo(position1)
-    task.wait(2)
-    teleportTo(position2)
-    task.wait(1)
+-- 🔁 Fungsi utama auto farm
+local function startAutoFarm()
+    if teleporting then return end
+    teleporting = true
+    print("🚀 Mulai auto farm summit...")
+
+    for i, pos in ipairs(teleportPoints) do
+        teleportTo(pos)
+        print("Teleport ke Posisi " .. i)
+        task.wait(2) -- jeda antar teleport
+    end
+
+    print("🏔️ Puncak tercapai! Respawn ke Basecamp...")
+    teleportTo(basecamp)
+    teleporting = false
 end
+
+-- 🖱️ Jalankan saat tombol ditekan
+script.Parent.MouseButton1Click:Connect(function()
+    if not teleporting then
+        startAutoFarm()
+    else
+        warn("⏳ AutoFarm sedang berjalan...")
+    end
+end)
+
 
 local function toggleAutoFarm(state)
     teleporting = state
