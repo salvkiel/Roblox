@@ -1,0 +1,236 @@
+-- ====== BAGIAN TELEPORT LIST (dengan delay) ======
+local teleportList = {
+    {name = "Teleport Pos 1", pos = Vector3.new(-1.858, 324.139, 2945.717), delay = 3},
+    {name = "Teleport Pos 2", pos = Vector3.new(-12.149, 336.266, 3131.099), delay = 3},
+    {name = "Teleport Pos 3", pos = Vector3.new(-234.331, 401.994, 4034.662), delay = 3},
+    {name = "Teleport Pos 4", pos = Vector3.new(-260.452, 339.807, 4382.458), delay = 3},
+    {name = "Teleport Pos 5", pos = Vector3.new(-350.004, 331.38, 4563.691), delay = 3},
+    {name = "Teleport Pos 6", pos = Vector3.new(-863.008, 228.044, 5330.454), delay = 3},
+    {name = "Teleport Pos 7", pos = Vector3.new(-1381.331, 504.732, 6360.716), delay = 3},
+    {name = "Teleport Pos 8", pos = Vector3.new(-1521.099, 537.663, 6747.521), delay = 3},
+    {name = "Teleport Pos 9", pos = Vector3.new(-1489.38, 546.493, 7075.592), delay = 3},
+    {name = "Teleport Pos 10", pos = Vector3.new(-892.735, 481.662, 8299.804), delay = 3},
+    {name = "Teleport Pos 11", pos = Vector3.new(-497.311, 608.767, 8792.895), delay = 3},
+    {name = "Teleport Pos 12", pos = Vector3.new(-303.358, 611.169, 8947.14), delay = 3},
+    {name = "Teleport Pos 13", pos = Vector3.new(-121.753, 599.254, 9166.275), delay = 3},
+    {name = "Teleport Pos 14", pos = Vector3.new(-9.714, 637.725, 9324.404), delay = 3},
+    {name = "Teleport Pos 15", pos = Vector3.new(214.159, 810.763, 10017.791), delay = 3},
+    {name = "PUNCAK", pos = Vector3.new(546.483, 1310.881, 10933.145), delay = 5},
+    {name = "BASECAMP", pos = Vector3.new(-469.602, 61.187, 544.347), delay = 6},
+}
+
+-- ====== MEMPERBARUI makeTeleportButton: tambahkan TextBox delay ======
+local function makeTeleportButton(name, pos, idx)
+    -- wrap dalam frame supaya bisa taruh button + textbox
+    local itemFrame = Instance.new("Frame")
+    itemFrame.Size = UDim2.new(0, 160, 0, 36)
+    itemFrame.BackgroundTransparency = 1
+    itemFrame.Parent = scrollFrame
+
+    local tpButton = Instance.new("TextButton")
+    tpButton.Size = UDim2.new(0, 110, 1, 0)
+    tpButton.Position = UDim2.new(0, 0, 0, 0)
+    tpButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    tpButton.Text = name
+    tpButton.TextColor3 = Color3.new(1, 1, 1)
+    tpButton.Font = Enum.Font.SourceSansBold
+    tpButton.TextSize = 14
+    tpButton.Parent = itemFrame
+
+    local tpCorner = Instance.new("UICorner")
+    tpCorner.CornerRadius = UDim.new(0, 8)
+    tpCorner.Parent = tpButton
+
+    local delayBox = Instance.new("TextBox")
+    delayBox.Size = UDim2.new(0, 40, 1, -6)
+    delayBox.Position = UDim2.new(0, 115, 0, 3)
+    delayBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    delayBox.TextColor3 = Color3.fromRGB(255,255,255)
+    delayBox.Font = Enum.Font.SourceSans
+    delayBox.TextSize = 14
+    delayBox.Text = tostring(teleportList[idx].delay or 3)
+    delayBox.PlaceholderText = "sec"
+    delayBox.ClearTextOnFocus = false
+    delayBox.Parent = itemFrame
+
+    local delayCorner = Instance.new("UICorner")
+    delayCorner.CornerRadius = UDim.new(0, 6)
+    delayCorner.Parent = delayBox
+
+    -- klik tombol -> teleport langsung ke pos
+    tpButton.MouseButton1Click:Connect(function()
+        local character = player.Character
+        if character and character:FindFirstChild("HumanoidRootPart") then
+            character.HumanoidRootPart.CFrame = CFrame.new(pos)
+        end
+    end)
+
+    -- validasi input ketika enter atau focus lost
+    local function applyDelayText(text)
+        local num = tonumber(text)
+        if num and num >= 0 then
+            teleportList[idx].delay = num
+            delayBox.Text = tostring(num)
+        else
+            -- revert ke nilai lama jika invalid
+            delayBox.Text = tostring(teleportList[idx].delay or 3)
+        end
+    end
+
+    delayBox.FocusLost:Connect(function(enterPressed)
+        applyDelayText(delayBox.Text)
+    end)
+
+    delayBox.Changed:Connect(function(prop)
+        if prop == "Text" then
+            -- optional: realtime validate minimal, jangan set agar user bisa edit dulu
+        end
+    end)
+end
+
+-- Buat semua tombol dari daftar (pakai index supaya delay tersambung)
+for idx, data in ipairs(teleportList) do
+    makeTeleportButton(data.name, data.pos, idx)
+end
+
+-- ====== CONTROLS: Default Delay dan Apply ke Semua ======
+-- tempatkan controls ini di bawah scrollFrame (atau di frame lain sesuai layout)
+local controlsFrame = Instance.new("Frame")
+controlsFrame.Size = UDim2.new(1, 0, 0, 60)
+controlsFrame.Position = UDim2.new(0, 0, 1, -65)
+controlsFrame.BackgroundTransparency = 1
+controlsFrame.Parent = sideFrame
+
+local defaultLabel = Instance.new("TextLabel")
+defaultLabel.Size = UDim2.new(0, 80, 0, 24)
+defaultLabel.Position = UDim2.new(0, 8, 0, 6)
+defaultLabel.BackgroundTransparency = 1
+defaultLabel.Text = "Default:"
+defaultLabel.TextColor3 = Color3.new(1,1,1)
+defaultLabel.Font = Enum.Font.SourceSans
+defaultLabel.TextSize = 14
+defaultLabel.Parent = controlsFrame
+
+local defaultBox = Instance.new("TextBox")
+defaultBox.Size = UDim2.new(0, 60, 0, 24)
+defaultBox.Position = UDim2.new(0, 90, 0, 6)
+defaultBox.BackgroundColor3 = Color3.fromRGB(30,30,30)
+defaultBox.TextColor3 = Color3.new(1,1,1)
+defaultBox.Text = "3"
+defaultBox.Font = Enum.Font.SourceSans
+defaultBox.TextSize = 14
+defaultBox.ClearTextOnFocus = false
+defaultBox.Parent = controlsFrame
+
+local applyAllBtn = Instance.new("TextButton")
+applyAllBtn.Size = UDim2.new(0, 60, 0, 24)
+applyAllBtn.Position = UDim2.new(0, 160, 0, 6)
+applyAllBtn.BackgroundColor3 = Color3.fromRGB(50,50,50)
+applyAllBtn.Text = "Apply"
+applyAllBtn.Font = Enum.Font.SourceSansBold
+applyAllBtn.TextSize = 14
+applyAllBtn.Parent = controlsFrame
+
+local applyCorner = Instance.new("UICorner")
+applyCorner.CornerRadius = UDim.new(0,6)
+applyCorner.Parent = applyAllBtn
+
+applyAllBtn.MouseButton1Click:Connect(function()
+    local v = tonumber(defaultBox.Text)
+    if v and v >= 0 then
+        for i = 1, #teleportList do
+            teleportList[i].delay = v
+        end
+        -- update semua TextBox di GUI: sederhana -> rebuild scrollFrame entries
+        -- (paling mudah adalah clear and recreate)
+        for _, obj in ipairs(scrollFrame:GetChildren()) do
+            if not (obj:IsA("UIListLayout")) then
+                obj:Destroy()
+            end
+        end
+        for idx, data in ipairs(teleportList) do
+            makeTeleportButton(data.name, data.pos, idx)
+        end
+    else
+        warn("Default delay invalid")
+    end
+end)
+
+-- ====== AUTO FARM SYSTEM (pakai delay tiap titik) ======
+local teleporting = false
+local function safeTeleportTo(pos)
+    local char = player.Character
+    if not char then return false end
+    local hrp = char:FindFirstChild("HumanoidRootPart")
+    if not hrp then return false end
+    local ok, err = pcall(function()
+        hrp.CFrame = CFrame.new(pos)
+    end)
+    if not ok then
+        warn("Teleport failed:", err)
+        return false
+    end
+    return true
+end
+
+local function autoFarmLoop()
+    while teleporting do
+        -- iterasi dari 1 sampai item sebelum BASECAMP (anggap BASECAMP di akhir)
+        for i = 1, #teleportList do
+            if not teleporting then break end
+            local data = teleportList[i]
+            -- teleport ke titik
+            safeTeleportTo(data.pos)
+            -- tunggu sesuai delay titik itu (fallback ke 3 detik jika nil)
+            local waitTime = tonumber(data.delay) or 3
+            -- jika item adalah PUNCAK, lanjutkan dan setelah loop nanti balik ke basecamp
+            task.wait(waitTime)
+        end
+
+        if not teleporting then break end
+
+        -- Setelah selesai (sampai akhir daftar), teleport ke BASECAMP (anggap terakhir)
+        local basecamp = teleportList[#teleportList]
+        if basecamp then
+            safeTeleportTo(basecamp.pos)
+            -- tunggu sesuai delay basecamp atau default
+            task.wait(tonumber(basecamp.delay) or 5)
+        end
+
+        -- lalu ulangi otomatis jika teleporting masih true
+    end
+
+    -- bila keluar loop, reset button tampilan di UI (aman)
+    if not teleporting then
+        button.Text = "SUMMIT"
+        button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    end
+end
+
+local function toggleAutoFarm(state)
+    teleporting = state
+    statusValue.Value = state
+    if teleporting then
+        button.Text = "RUNNING..."
+        button.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+        task.spawn(autoFarmLoop)
+    else
+        -- set false => autoFarmLoop akan berhenti sendiri
+        button.Text = "SUMMIT"
+        button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    end
+end
+
+button.MouseButton1Click:Connect(function()
+    toggleAutoFarm(not teleporting)
+end)
+
+-- Optional safety: pause auto-farm saat respawn
+player.CharacterAdded:Connect(function(char)
+    if teleporting then
+        -- pause sementara sampai character siap kembali; opsi: matikan auto farm
+        toggleAutoFarm(false)
+        -- beri notifikasi (bisa diganti dengan GUI)
+        warn("AutoFarm dihentikan karena respawn. Klik SUMMIT untuk mulai lagi.")
+    end
+end)
