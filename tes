@@ -92,7 +92,7 @@ local summitCorner = Instance.new("UICorner")
 summitCorner.CornerRadius = UDim.new(0, 10)
 summitCorner.Parent = summitButton
 
--- 🔽 Tombol RESPawn 🔽
+-- Tombol RESPawn
 local respawnButton = Instance.new("TextButton")
 respawnButton.Size = UDim2.new(0, 160, 0, 40)
 respawnButton.Position = UDim2.new(0.5, -80, 0.5, 20)
@@ -110,11 +110,11 @@ respawnCorner.Parent = respawnButton
 respawnButton.MouseButton1Click:Connect(function()
 	local char = player.Character
 	if char then
-		char:BreakJoints() -- Bunuh karakter untuk respawn
+		char:BreakJoints() -- Respawn karakter
 	end
 end)
 
--- 🔽 GUI Samping Teleport 🔽
+-- GUI samping Teleport
 local flagButton = Instance.new("ImageButton")
 flagButton.Size = UDim2.new(0, 20, 0, 20)
 flagButton.Position = UDim2.new(1, -30, 0, 5)
@@ -155,12 +155,11 @@ flagButton.MouseButton1Click:Connect(function()
 	sideFrame.Visible = not sideFrame.Visible
 end)
 
--- 🔽 Teleport List 🔽
+-- Teleport List
 local teleportList = {
 	{name = "PUNCAK", pos = Vector3.new(780.47, 2183.38, 3945.07)},
 }
 
--- 🔽 Fungsi bikin tombol teleport otomatis 🔽
 local function makeTeleportButton(name, pos)
 	local tpButton = Instance.new("TextButton")
 	tpButton.Size = UDim2.new(0, 140, 0, 35)
@@ -183,12 +182,11 @@ local function makeTeleportButton(name, pos)
 	end)
 end
 
--- Buat semua tombol dari daftar
 for _, data in ipairs(teleportList) do
 	makeTeleportButton(data.name, data.pos)
 end
 
--- 🔽 AUTO FARM SYSTEM (Tombol SUMMIT) 🔽
+-- AUTO FARM SYSTEM (Tombol SUMMIT)
 local position1 = Vector3.new(306.211, 1262.616, 86.109)
 local position2 = Vector3.new(353.721, 1238.603, 226.745)
 local teleporting = false
@@ -201,10 +199,12 @@ local function teleportTo(pos)
 end
 
 local function autoFarmLoop()
-	teleportTo(position1)
-	task.wait(0.5)
-	teleportTo(position2)
-	task.wait(0.5)
+	while teleporting do
+		teleportTo(position1)
+		task.wait(0.5)
+		teleportTo(position2)
+		task.wait(0.5)
+	end
 end
 
 local function toggleAutoFarm(state)
@@ -220,6 +220,13 @@ local function toggleAutoFarm(state)
 	end
 end
 
+-- Klik manual
 summitButton.MouseButton1Click:Connect(function()
 	toggleAutoFarm(not teleporting)
+end)
+
+-- 🔽 AUTO START SETELAH RESPAWN 🔽
+player.CharacterAdded:Connect(function()
+	task.wait(1) -- tunggu karakter muncul sepenuhnya
+	toggleAutoFarm(true) -- langsung aktifkan auto farm
 end)
