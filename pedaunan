@@ -47,11 +47,11 @@ local function autoFarmLoop()
 		for i, data in ipairs(teleportList) do
 			-- Teleport ke posisi
 			teleportTo(data.pos)
-			task.wait(2)
+			task.wait(0.5)
 
 			-- Jika sudah sampai PUNCAK, lakukan respawn dan mulai ulang
 			if data.name == "PUNCAK" then
-				task.wait(2)
+				task.wait(1)
 				local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
 				if humanoid then
 					humanoid.Health = 0 -- Respawn player
@@ -66,7 +66,7 @@ local function autoFarmLoop()
 				teleportTo(basecamp)
 
 				-- Ulang dari awal
-				task.wait(2)
+				task.wait(1)
 				break -- keluar dari for-loop untuk mulai ulang while-loop
 			end
 		end
