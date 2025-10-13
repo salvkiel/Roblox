@@ -1,0 +1,111 @@
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+local TeleportService = game:GetService("TeleportService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local player = Players.LocalPlayer
+
+-- 🔽 TELEPORT LIST 🔽
+local teleportList = {
+    {name = "Teleport Pos 1", pos = Vector3.new(-62.219, 61.272, -1012.715)},
+    {name = "Teleport Pos 2", pos = Vector3.new(-518.263, 31.418, -1449.677)},
+    {name = "Teleport Pos 3", pos = Vector3.new(-1098.454, 99.032, -1666.814)},
+    {name = "Teleport Pos 4", pos = Vector3.new(-1384.369, 91.197, -2035.763)},
+    {name = "Teleport Pos 5", pos = Vector3.new(-1961.388, 20.663, -2010.37)},
+    {name = "Teleport Pos 6", pos = Vector3.new(-2317.07, 183.819, -2410.748)},
+    {name = "Teleport Pos 7", pos = Vector3.new(-2692.163, 236.241, -2892.914)},
+    {name = "Teleport Pos 8", pos = Vector3.new(-3001.781, 376.222, -3349.222)},
+    {name = "Teleport Pos 9", pos = Vector3.new(-3702.666, 666.001, -4244.088)},
+    {name = "Teleport Pos 10", pos = Vector3.new(-3904.514, 826.714, -5038.68)},
+    {name = "Teleport Pos 11", pos = Vector3.new(-3728.446, 949.734, -5453.592)},
+    {name = "Teleport Pos 12", pos = Vector3.new(-3140.74, 1281.464, -6435.697)},
+    {name = "Teleport Pos 13", pos = Vector3.new(-2533.653, 1579.135, -6521.36)},
+    {name = "Teleport Pos 14", pos = Vector3.new(-2289.774, 1750.859, -7903.055)},
+    {name = "Teleport Pos 15", pos = Vector3.new(-2364.218, 2064.646, -9753.298)},
+    {name = "PUNCAK", pos = Vector3.new(-2437.124, 2137.905, -10295.655)},
+    {name = "BASECAMP", pos = Vector3.new(47.406, 8.707, 314.532)},
+}
+
+-- 🔽 REFERENSI PEMAIN 🔽
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+-- 🔽 FUNGSI TELEPORT 🔽
+local function teleportTo(position)
+	local character = player.Character or player.CharacterAdded:Wait()
+	local hrp = character:WaitForChild("HumanoidRootPart")
+	hrp.CFrame = CFrame.new(position)
+end
+
+-- 🔽 SISTEM AUTO FARM 🔽
+local teleporting = false
+
+local function autoFarmLoop()
+	teleporting = true
+
+	while teleporting do
+		for i, data in ipairs(teleportList) do
+			-- Teleport ke posisi
+			teleportTo(data.pos)
+			task.wait(2)
+
+			-- Jika sudah sampai PUNCAK, lakukan respawn dan mulai ulang
+			if data.name == "PUNCAK" then
+				task.wait(2)
+				local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+				if humanoid then
+					humanoid.Health = 0 -- Respawn player
+				end
+
+				-- Tunggu karakter respawn
+				player.CharacterAdded:Wait()
+
+				-- Kembali ke BASECAMP
+				local basecamp = teleportList[#teleportList].pos
+				task.wait(1)
+				teleportTo(basecamp)
+
+				-- Ulang dari awal
+				task.wait(2)
+				break -- keluar dari for-loop untuk mulai ulang while-loop
+			end
+		end
+	end
+end
+
+-- 🔽 MULAI OTOMATIS 🔽
+task.spawn(autoFarmLoop)
+
+local function toggleAutoFarm(state)
+    teleporting = state
+    statusValue.Value = state
+    if teleporting then
+        button.Text = "RUNNING..."
+        button.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+        task.spawn(autoFarmLoop)
+    else
+        button.Text = "RUNNING..."
+        button.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+    end
+end
+
+button.MouseButton1Click:Connect(function()
+    toggleAutoFarm(not teleporting)
+end)
+
+local function toggleAutoFarm(state)
+    teleporting = state
+    statusValue.Value = state
+    if teleporting then
+        button.Text = "RUNNING..."
+        button.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+        task.spawn(autoFarmLoop)
+    else
+        button.Text = "RUNNING..."
+        button.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+    end
+end
+
+button.MouseButton1Click:Connect(function()
+    toggleAutoFarm(not teleporting)
+end)
