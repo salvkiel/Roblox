@@ -1,0 +1,232 @@
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+local TeleportService = game:GetService("TeleportService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local player = Players.LocalPlayer
+
+-- 🔽 ANIMASI "BY : Xraxor" 🔽
+do
+    local introGui = Instance.new("ScreenGui")
+    introGui.Name = "IntroAnimation"
+    introGui.ResetOnSpawn = false
+    introGui.Parent = player:WaitForChild("PlayerGui")
+
+    local introLabel = Instance.new("TextLabel")
+    introLabel.Size = UDim2.new(0, 300, 0, 50)
+    introLabel.Position = UDim2.new(0.5, -150, 0.4, 0)
+    introLabel.BackgroundTransparency = 1
+    introLabel.Text = "By : Xraxor"
+    introLabel.TextColor3 = Color3.fromRGB(40, 40, 40)
+    introLabel.TextScaled = true
+    introLabel.Font = Enum.Font.GothamBold
+    introLabel.Parent = introGui
+
+    local tweenInfoMove = TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true)
+    local tweenMove = TweenService:Create(introLabel, tweenInfoMove, {Position = UDim2.new(0.5, -150, 0.42, 0)})
+
+    local tweenInfoColor = TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true)
+    local tweenColor = TweenService:Create(introLabel, tweenInfoColor, {TextColor3 = Color3.fromRGB(0, 0, 0)})
+
+    tweenMove:Play()
+    tweenColor:Play()
+
+    task.wait(2)
+    local fadeOut = TweenService:Create(introLabel, TweenInfo.new(0.5), {TextTransparency = 1})
+    fadeOut:Play()
+    fadeOut.Completed:Connect(function()
+        introGui:Destroy()
+    end)
+end
+
+-- 🔽 Status AutoFarm 🔽
+local statusValue = ReplicatedStorage:FindFirstChild("AutoFarmStatus")
+if not statusValue then
+    statusValue = Instance.new("BoolValue")
+    statusValue.Name = "AutoFarmStatus"
+    statusValue.Value = false
+    statusValue.Parent = ReplicatedStorage
+end
+
+-- 🔽 GUI Utama 🔽
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "AutoFarmGUI"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 220, 0, 200)
+frame.Position = UDim2.new(0.4, -110, 0.5, -100)
+frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+frame.BorderSizePixel = 0
+frame.Active = true
+frame.Draggable = true
+frame.Parent = screenGui
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 15)
+corner.Parent = frame
+
+-- Judul GUI
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 30)
+title.BackgroundTransparency = 1
+title.Text = "Mount Atin V2"
+title.TextColor3 = Color3.new(1, 1, 1)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 16
+title.Parent = frame
+
+-- Tombol SUMMIT
+local summitButton = Instance.new("TextButton")
+summitButton.Size = UDim2.new(0, 160, 0, 40)
+summitButton.Position = UDim2.new(0.5, -80, 0.5, -30)
+summitButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+summitButton.Text = "SUMMIT"
+summitButton.TextColor3 = Color3.new(1, 1, 1)
+summitButton.Font = Enum.Font.GothamBold
+summitButton.TextSize = 15
+summitButton.Parent = frame
+
+local summitCorner = Instance.new("UICorner")
+summitCorner.CornerRadius = UDim.new(0, 10)
+summitCorner.Parent = summitButton
+
+-- Tombol RESPawn
+local respawnButton = Instance.new("TextButton")
+respawnButton.Size = UDim2.new(0, 160, 0, 40)
+respawnButton.Position = UDim2.new(0.5, -80, 0.5, 20)
+respawnButton.BackgroundColor3 = Color3.fromRGB(80, 30, 30)
+respawnButton.Text = "RESPAWN"
+respawnButton.TextColor3 = Color3.new(1, 1, 1)
+respawnButton.Font = Enum.Font.GothamBold
+respawnButton.TextSize = 15
+respawnButton.Parent = frame
+
+local respawnCorner = Instance.new("UICorner")
+respawnCorner.CornerRadius = UDim.new(0, 10)
+respawnCorner.Parent = respawnButton
+
+respawnButton.MouseButton1Click:Connect(function()
+	local char = player.Character
+	if char then
+		char:BreakJoints() -- Respawn karakter
+	end
+end)
+
+-- GUI samping Teleport
+local flagButton = Instance.new("ImageButton")
+flagButton.Size = UDim2.new(0, 20, 0, 20)
+flagButton.Position = UDim2.new(1, -30, 0, 5)
+flagButton.BackgroundTransparency = 1
+flagButton.Image = "rbxassetid://6031097229"
+flagButton.Parent = frame
+
+local sideFrame = Instance.new("Frame")
+sideFrame.Size = UDim2.new(0, 170, 0, 200)
+sideFrame.Position = UDim2.new(1, 10, 0, 0)
+sideFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+sideFrame.Visible = false
+sideFrame.Parent = frame
+
+local sideCorner = Instance.new("UICorner")
+sideCorner.CornerRadius = UDim.new(0, 12)
+sideCorner.Parent = sideFrame
+
+local scrollFrame = Instance.new("ScrollingFrame")
+scrollFrame.Size = UDim2.new(1, 0, 1, -5)
+scrollFrame.Position = UDim2.new(0, 0, 0, 5)
+scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+scrollFrame.ScrollBarThickness = 6
+scrollFrame.BackgroundTransparency = 1
+scrollFrame.Parent = sideFrame
+
+local listLayout = Instance.new("UIListLayout")
+listLayout.Padding = UDim.new(0, 5)
+listLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+listLayout.Parent = scrollFrame
+
+listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+	scrollFrame.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y + 10)
+end)
+
+flagButton.MouseButton1Click:Connect(function()
+	sideFrame.Visible = not sideFrame.Visible
+end)
+
+-- Teleport List
+local teleportList = {
+	{name = "PUNCAK", pos = Vector3.new(780.47, 2183.38, 3945.07)},
+}
+
+local function makeTeleportButton(name, pos)
+	local tpButton = Instance.new("TextButton")
+	tpButton.Size = UDim2.new(0, 140, 0, 35)
+	tpButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	tpButton.Text = name
+	tpButton.TextColor3 = Color3.new(1, 1, 1)
+	tpButton.Font = Enum.Font.SourceSansBold
+	tpButton.TextSize = 14
+	tpButton.Parent = scrollFrame
+
+	local tpCorner = Instance.new("UICorner")
+	tpCorner.CornerRadius = UDim.new(0, 8)
+	tpCorner.Parent = tpButton
+
+	tpButton.MouseButton1Click:Connect(function()
+		local character = player.Character
+		if character and character:FindFirstChild("HumanoidRootPart") then
+			character.HumanoidRootPart.CFrame = CFrame.new(pos)
+		end
+	end)
+end
+
+for _, data in ipairs(teleportList) do
+	makeTeleportButton(data.name, data.pos)
+end
+
+-- AUTO FARM SYSTEM (Tombol SUMMIT)
+local position1 = Vector3.new(306.211, 1262.616, 86.109)
+local position2 = Vector3.new(238.417, -461.396, -2256.428)
+local teleporting = false
+
+local function teleportTo(pos)
+	local char = player.Character
+	if char and char:FindFirstChild("HumanoidRootPart") then
+		char.HumanoidRootPart.CFrame = CFrame.new(pos)
+	end
+end
+
+local function autoFarmLoop()
+	while teleporting do
+		teleportTo(position1)
+		task.wait(1)
+		teleportTo(position2)
+		task.wait(1)
+	end
+end
+
+local function toggleAutoFarm(state)
+	teleporting = state
+	statusValue.Value = state
+	if teleporting then
+		summitButton.Text = "RUNNING..."
+		summitButton.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+		task.spawn(autoFarmLoop)
+	else
+		summitButton.Text = "SUMMIT"
+		summitButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+	end
+end
+
+-- Klik manual
+summitButton.MouseButton1Click:Connect(function()
+	toggleAutoFarm(not teleporting)
+end)
+
+-- 🔽 AUTO START SETELAH RESPAWN 🔽
+player.CharacterAdded:Connect(function()
+	task.wait(1) -- tunggu karakter muncul sepenuhnya
+	toggleAutoFarm(true) -- langsung aktifkan auto farm
+end)
