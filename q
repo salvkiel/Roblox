@@ -193,8 +193,9 @@ for _, data in ipairs(teleportList) do
 end
 
 -- 🔽 AUTO FARM SYSTEM (Tombol SUMMIT) 🔽
-local position1 = Vector3.new(625.27, 1799.83, 3432.84)
-local position2 = Vector3.new(780.47, 2183.38, 3945.07)
+local position1 = Vector3.new(-120.168, -176.5, 16.251)
+local position2 = Vector3.new(4.814, -171.828, -205.315)
+local position3 = Vector3.new(82.32, -220.201, 219.96)
 local teleporting = false
 
 local function teleportTo(pos)
@@ -206,9 +207,11 @@ end
 
 local function autoFarmLoop()
     teleportTo(position1)
-    task.wait(2)
+    task.wait(0.5)
     teleportTo(position2)
-    task.wait(1)
+    task.wait(0.5)
+    teleportTo(position3)
+    task.wait(0.5)
     TeleportService:Teleport(game.PlaceId, player) -- Rejoin
 end
 
