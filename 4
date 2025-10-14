@@ -1,0 +1,127 @@
+--// Admin Title System (Delta Executor + GitHub Version)
+--// By Salvkiel
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local player = Players.LocalPlayer
+
+-- Admin UserIds yang diizinkan (kamu ganti ke UserId kamu)
+local Admins = {
+    [player.UserId] = true, -- otomatis diri kamu
+    [9722503998] = true, -- contoh
+}
+
+-- Pastikan kamu admin
+if not Admins[player.UserId] then
+    return warn("Kamu tidak terdaftar sebagai admin!")
+end
+
+-- Fungsi buat cari player
+local function FindPlayer(name)
+    name = string.lower(name)
+    for _, p in pairs(Players:GetPlayers()) do
+        if string.find(string.lower(p.Name), name) then
+            return p
+        end
+    end
+end
+
+-- Fungsi buat bikin title
+local function CreateTitle(target, text, color)
+    if not target.Character then return end
+    local head = target.Character:FindFirstChild("Head")
+    if not head then return end
+
+    -- Hapus dulu yang lama
+    for _, gui in pairs(head:GetChildren()) do
+        if gui:IsA("BillboardGui") and gui.Name == "AdminTitle" then
+            gui:Destroy()
+        end
+    end
+
+    -- Buat baru
+    local billboard = Instance.new("BillboardGui")
+    billboard.Name = "AdminTitle"
+    billboard.Size = UDim2.new(0, 200, 0, 50)
+    billboard.StudsOffset = Vector3.new(0, 2.5, 0)
+    billboard.AlwaysOnTop = true
+    billboard.Parent = head
+
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.BackgroundTransparency = 1
+    label.TextScaled = true
+    label.Font = Enum.Font.GothamBold
+    label.TextColor3 = color or Color3.fromRGB(255, 200, 0)
+    label.Text = text or "🔰 ADMIN"
+    label.Parent = billboard
+end
+
+-- Coba replikasi server
+local function GiveTitle(target, text, color)
+    local remote = ReplicatedStorage:FindFirstChild("AdminTitleRequest")
+
+    if remote and remote:IsA("RemoteEvent") then
+        -- coba minta server pasang title (jika game ada server-side support)
+        remote:FireServer(target.UserId, text, 120)
+        print("🔥 Request dikirim ke server untuk:", target.Name)
+    else
+        -- kalau tidak ada remote, buat lokal
+        CreateTitle(target, text, color)
+        print("⚠️ Tidak ada RemoteEvent, dibuat secara lokal:", target.Name)
+    end
+end
+
+-- GUI sederhana untuk pilih target
+local screen = Instance.new("ScreenGui")
+screen.Name = "AdminTitleGUI"
+screen.Parent = player:WaitForChild("PlayerGui")
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 220, 0, 160)
+frame.Position = UDim2.new(0.4, -110, 0.5, -80)
+frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+frame.Active = true
+frame.Draggable = true
+frame.Parent = screen
+
+local corner = Instance.new("UICorner", frame)
+corner.CornerRadius = UDim.new(0, 15)
+
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1, 0, 0, 30)
+title.BackgroundTransparency = 1
+title.Text = "👑 Admin Title System"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextScaled = true
+
+local box = Instance.new("TextBox", frame)
+box.Size = UDim2.new(1, -20, 0, 30)
+box.Position = UDim2.new(0, 10, 0, 40)
+box.PlaceholderText = "Nama pemain..."
+box.Text = ""
+box.TextScaled = true
+box.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+box.TextColor3 = Color3.fromRGB(255, 255, 255)
+Instance.new("UICorner", box).CornerRadius = UDim.new(0, 8)
+
+local button = Instance.new("TextButton", frame)
+button.Size = UDim2.new(1, -20, 0, 35)
+button.Position = UDim2.new(0, 10, 0, 80)
+button.Text = "✨ Berikan Title"
+button.TextScaled = true
+button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+button.TextColor3 = Color3.fromRGB(255, 255, 255)
+Instance.new("UICorner", button).CornerRadius = UDim.new(0, 8)
+
+button.MouseButton1Click:Connect(function()
+    local name = box.Text
+    local target = FindPlayer(name)
+    if target then
+        GiveTitle(target, "👑 ADMIN SALVKIEL", Color3.fromRGB(255, 215, 0))
+    else
+        warn("Pemain tidak ditemukan:", name)
+    end
+end)
+
+print("✅ Admin Title GUI loaded. Ketik nama pemain lalu klik tombol untuk beri title.")
