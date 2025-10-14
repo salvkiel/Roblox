@@ -1,5 +1,0 @@
-for _,p in pairs(game.Players:GetPlayers()) do
-    if p.Character then
-        p.Character.Humanoid.Health = 0
-    end
-end
