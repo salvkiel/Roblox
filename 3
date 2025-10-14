@@ -1,0 +1,253 @@
+-- 📜 Admin List & Quick Actions (Executor Client)
+-- By ChatGPT (2025) — GUI minimal / FE-OFF friendly
+-- Fungsi: tunjukkan admin list, teleport ke admin (replikasi pasti),
+-- dan coba buat "global tag" / "marker" pada admin (akan berhasil kalau server FE-OFF atau executor support).
+
+---------------------------------------------------------------------
+-- Services & Config
+---------------------------------------------------------------------
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+local player = Players.LocalPlayer
+local camera = workspace.CurrentCamera
+
+-- Daftar admin: isi dengan UserId adminmu
+local ADMIN_IDS = {
+    9722503998, -- ganti ini
+}
+
+local function isAdmin(p)
+    if not p then return false end
+    for _,id in ipairs(ADMIN_IDS) do
+        if p.UserId == id then return true end
+    end
+    return false
+end
+
+---------------------------------------------------------------------
+-- GUI (minimal, mengikuti tema gelap kecil)
+---------------------------------------------------------------------
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "AdminListGUI"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 220, 0, 140)
+mainFrame.Position = UDim2.new(0.4, -110, 0.2, 0)
+mainFrame.BackgroundColor3 = Color3.fromRGB(20,20,20)
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = screenGui
+
+local mainCorner = Instance.new("UICorner", mainFrame)
+mainCorner.CornerRadius = UDim.new(0,12)
+
+local title = Instance.new("TextLabel", mainFrame)
+title.Size = UDim2.new(1,0,0,30)
+title.Position = UDim2.new(0,0,0,0)
+title.BackgroundColor3 = Color3.fromRGB(32,32,32)
+title.TextColor3 = Color3.fromRGB(255,255,255)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 14
+title.Text = "🔰 Admin List"
+local tCorner = Instance.new("UICorner", title)
+tCorner.CornerRadius = UDim.new(0,12)
+
+local listFrame = Instance.new("Frame", mainFrame)
+listFrame.Position = UDim2.new(0,8,0,36)
+listFrame.Size = UDim2.new(1,-16,0,92)
+listFrame.BackgroundTransparency = 1
+
+local uiLayout = Instance.new("UIListLayout", listFrame)
+uiLayout.Padding = UDim.new(0,6)
+uiLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+---------------------------------------------------------------------
+-- Utility: create small button
+---------------------------------------------------------------------
+local function makeSmallButton(text)
+    local b = Instance.new("TextButton")
+    b.Size = UDim2.new(0.38, 0, 1, 0)
+    b.BackgroundColor3 = Color3.fromRGB(60,60,60)
+    b.TextColor3 = Color3.new(1,1,1)
+    b.Font = Enum.Font.GothamBold
+    b.TextSize = 13
+    b.Text = text
+    local c = Instance.new("UICorner", b)
+    c.CornerRadius = UDim.new(0,6)
+    return b
+end
+
+---------------------------------------------------------------------
+-- Core actions
+---------------------------------------------------------------------
+-- 1) Teleport local player to target admin (replikasi: posisi karakter lokal => global)
+local function teleportToPlayer(targetPlayer)
+    if not targetPlayer or not targetPlayer.Character then return end
+    local myChar = player.Character
+    if not myChar or not myChar:FindFirstChild("HumanoidRootPart") then return end
+    local targetHRP = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if not targetHRP then return end
+    myChar.HumanoidRootPart.CFrame = targetHRP.CFrame + Vector3.new(0, 5, 0)
+    if workspace.CurrentCamera then
+        workspace.CurrentCamera.CFrame = myChar.HumanoidRootPart.CFrame * CFrame.new(0,3,6)
+    end
+end
+
+-- 2) Create a visible marker (Part) at target position and attempt to force network ownership so it's global (may fail)
+local function createGlobalMarkerAt(targetPlayer)
+    if not targetPlayer or not targetPlayer.Character then return end
+    local hrp = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+
+    local marker = Instance.new("Part")
+    marker.Name = "AdminMarker_" .. targetPlayer.Name
+    marker.Size = Vector3.new(2,2,2)
+    marker.Shape = Enum.PartType.Ball
+    marker.Anchored = true
+    marker.CanCollide = false
+    marker.Material = Enum.Material.Neon
+    marker.Position = hrp.Position + Vector3.new(0, 3, 0)
+    marker.Parent = workspace
+
+    -- Billboard label on marker
+    local billboard = Instance.new("BillboardGui", marker)
+    billboard.Size = UDim2.new(0,160,0,30)
+    billboard.StudsOffset = Vector3.new(0, 1.5, 0)
+    billboard.AlwaysOnTop = true
+    local t = Instance.new("TextLabel", billboard)
+    t.Size = UDim2.new(1,0,1,0)
+    t.BackgroundTransparency = 1
+    t.Text = "🔰 ADMIN: "..targetPlayer.Name
+    t.Font = Enum.Font.GothamBold
+    t.TextScaled = true
+    t.TextColor3 = Color3.fromRGB(255,200,60)
+
+    -- Try to force network ownership / replication (executor-specific helpers)
+    pcall(function()
+        -- Synapse/secure executors: set hidden property to manual ownership
+        if sethiddenproperty then
+            -- Some executors expose these hidden properties; this is a best-effort
+            sethiddenproperty(marker, "NetworkOwnershipRule", Enum.NetworkOwnership.Manual)
+            sethiddenproperty(marker, "NetworkOwner", player)
+        elseif sethiddenprop then
+            sethiddenprop(marker, "NetworkOwnershipRule", Enum.NetworkOwnership.Manual)
+            sethiddenprop(marker, "NetworkOwner", player)
+        end
+    end)
+
+    -- Return marker to allow removal later
+    return marker
+end
+
+-- 3) Attach a Billboard tag above target's head (attempts to parent under character head)
+local function giveAdminTag(targetPlayer)
+    if not targetPlayer or not targetPlayer.Character then return end
+    local head = targetPlayer.Character:FindFirstChild("Head")
+    if not head then return end
+
+    local tagName = "AdminTag_By_" .. player.Name
+    -- remove old if exists
+    if head:FindFirstChild(tagName) then head[tagName]:Destroy() end
+
+    local gui = Instance.new("BillboardGui")
+    gui.Name = tagName
+    gui.Size = UDim2.new(0,160,0,30)
+    gui.StudsOffset = Vector3.new(0, 2.2, 0)
+    gui.AlwaysOnTop = true
+    gui.Parent = head  -- parent to head (best effort)
+
+    local lbl = Instance.new("TextLabel", gui)
+    lbl.Size = UDim2.new(1,0,1,0)
+    lbl.BackgroundTransparency = 1
+    lbl.Text = "🔰 ADMIN"
+    lbl.Font = Enum.Font.GothamBold
+    lbl.TextScaled = true
+    lbl.TextColor3 = Color3.fromRGB(255,215,120)
+
+    -- attempt to force replication by moving gui into workspace if possible
+    pcall(function()
+        if sethiddenproperty then
+            -- trying to change ownership of GUI if it's replicable (best effort)
+            sethiddenproperty(gui, "Archivable", true)
+        end
+    end)
+
+    return gui
+end
+
+---------------------------------------------------------------------
+-- Build admin list UI items
+---------------------------------------------------------------------
+local function rebuildAdminList()
+    -- clear existing
+    for _,child in ipairs(listFrame:GetChildren()) do
+        if not child:IsA("UIListLayout") then child:Destroy() end
+    end
+
+    for _,p in ipairs(Players:GetPlayers()) do
+        if p ~= player and isAdmin(p) then
+            local row = Instance.new("Frame")
+            row.Size = UDim2.new(1,0,0,28)
+            row.BackgroundTransparency = 1
+            row.Parent = listFrame
+
+            local nameLbl = Instance.new("TextLabel", row)
+            nameLbl.Size = UDim2.new(0.6, 0, 1, 0)
+            nameLbl.Position = UDim2.new(0,0,0,0)
+            nameLbl.BackgroundTransparency = 1
+            nameLbl.Text = p.Name
+            nameLbl.Font = Enum.Font.Gotham
+            nameLbl.TextSize = 14
+            nameLbl.TextColor3 = Color3.fromRGB(220,220,220)
+            nameLbl.TextXAlignment = Enum.TextXAlignment.Left
+
+            local tpBtn = makeSmallButton("TP")
+            tpBtn.Parent = row
+            tpBtn.Position = UDim2.new(0.62, 0, 0, 0)
+            tpBtn.MouseButton1Click:Connect(function()
+                teleportToPlayer(p)
+            end)
+
+            local markBtn = makeSmallButton("MARK")
+            markBtn.Parent = row
+            markBtn.Position = UDim2.new(0.78, 0, 0, 0)
+            markBtn.MouseButton1Click:Connect(function()
+                local m = createGlobalMarkerAt(p)
+                -- auto-remove marker after 20s
+                task.delay(20, function()
+                    if m and m.Parent then pcall(function() m:Destroy() end) end
+                end)
+            end)
+        end
+    end
+end
+
+-- initial build
+rebuildAdminList()
+
+-- rebuild when players join/leave
+Players.PlayerAdded:Connect(function()
+    rebuildAdminList()
+end)
+Players.PlayerRemoving:Connect(function()
+    rebuildAdminList()
+end)
+
+-- convenience: refresh when local player respawn
+player.CharacterAdded:Connect(function()
+    task.wait(1)
+    rebuildAdminList()
+end)
+
+---------------------------------------------------------------------
+-- Helpful prints & warning
+---------------------------------------------------------------------
+print("[AdminListGUI] Loaded. Teleport (TP) -> teleports you to admin (replicates).")
+print("[AdminListGUI] MARK tries to create workspace marker (may be local-only depending on server/executor).")
+print("[AdminListGUI] Edit ADMIN_IDS in script to set admin UserIds.")
+
+---------------------------------------------------------------------
+-- End of script
+---------------------------------------------------------------------
