@@ -201,9 +201,9 @@ end
 local function autoFarmLoop()
 	while teleporting do
 		teleportTo(position1)
-		task.wait(0.5)
+		task.wait(0.2)
 		teleportTo(position2)
-		task.wait(0.5)
+		task.wait(0.2)
 	end
 end
 
