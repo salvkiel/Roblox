@@ -1,0 +1,158 @@
+-- 📦 SERVICE
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+-- 🎨 GUI UTAMA
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "GitHubLoader"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 260, 0, 230)
+frame.Position = UDim2.new(0.4, -130, 0.5, -115)
+frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+frame.BorderSizePixel = 0
+frame.Active = true
+frame.Draggable = true
+frame.Parent = screenGui
+
+-- 🔹 TITLE
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 30)
+title.BackgroundTransparency = 1
+title.Text = "🔗 GitHub Script Loader"
+title.TextColor3 = Color3.fromRGB(0, 255, 255)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 16
+title.Parent = frame
+
+-- ❌ CLOSE BUTTON
+local closeButton = Instance.new("TextButton")
+closeButton.Size = UDim2.new(0, 25, 0, 25)
+closeButton.Position = UDim2.new(1, -30, 0, 5)
+closeButton.Text = "X"
+closeButton.Font = Enum.Font.GothamBold
+closeButton.TextSize = 14
+closeButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.BorderSizePixel = 0
+closeButton.Parent = frame
+
+-- 🧩 LIST SCRIPT GITHUB (KAMU BISA TAMBAH SESUKA HATI)
+local scriptList = {
+    ["Summit Saxer"] = "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/saxerlucke.lua",
+    ["Admin Title"] = "https://raw.githubusercontent.com/SalvkielHub/scripts/main/admin_title.lua",
+    ["Auto Farm"] = "https://raw.githubusercontent.com/SalvkielHub/scripts/main/autofarm.lua",
+    ["Player Detector"] = "https://raw.githubusercontent.com/SalvkielHub/scripts/main/player_detector.lua"
+}
+
+-- 📜 LABEL PILIH SCRIPT
+local label = Instance.new("TextLabel")
+label.Size = UDim2.new(1, -20, 0, 20)
+label.Position = UDim2.new(0, 10, 0, 40)
+label.BackgroundTransparency = 1
+label.Text = "Pilih Script dari Daftar:"
+label.TextColor3 = Color3.fromRGB(255, 255, 255)
+label.Font = Enum.Font.Gotham
+label.TextSize = 14
+label.TextXAlignment = Enum.TextXAlignment.Left
+label.Parent = frame
+
+-- 🔽 DROPDOWN MENU
+local dropdown = Instance.new("TextButton")
+dropdown.Size = UDim2.new(1, -20, 0, 30)
+dropdown.Position = UDim2.new(0, 10, 0, 65)
+dropdown.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+dropdown.TextColor3 = Color3.fromRGB(255, 255, 255)
+dropdown.Text = "Pilih Script ▼"
+dropdown.Font = Enum.Font.Gotham
+dropdown.TextSize = 14
+dropdown.BorderSizePixel = 0
+dropdown.Parent = frame
+
+local dropdownFrame = Instance.new("Frame")
+dropdownFrame.Size = UDim2.new(1, -20, 0, 0)
+dropdownFrame.Position = UDim2.new(0, 10, 0, 100)
+dropdownFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+dropdownFrame.BorderSizePixel = 0
+dropdownFrame.Visible = false
+dropdownFrame.ClipsDescendants = true
+dropdownFrame.Parent = frame
+
+-- Tambah tombol script ke dropdown
+local scriptButtons = {}
+local yPos = 0
+for name, url in pairs(scriptList) do
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(1, 0, 0, 25)
+    button.Position = UDim2.new(0, 0, 0, yPos)
+    button.Text = name
+    button.Font = Enum.Font.Gotham
+    button.TextSize = 14
+    button.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.BorderSizePixel = 0
+    button.Parent = dropdownFrame
+    table.insert(scriptButtons, button)
+    yPos = yPos + 25
+
+    button.MouseButton1Click:Connect(function()
+        dropdown.Text = "Script: " .. name
+        dropdownFrame.Visible = false
+        dropdownFrame.Size = UDim2.new(1, -20, 0, 0)
+        textbox.Text = url
+    end)
+end
+
+-- 🧠 TEXTBOX UNTUK LINK CUSTOM
+local textbox = Instance.new("TextBox")
+textbox.Size = UDim2.new(1, -20, 0, 30)
+textbox.Position = UDim2.new(0, 10, 0, 140)
+textbox.PlaceholderText = "Atau masukkan link RAW GitHub..."
+textbox.Text = ""
+textbox.Font = Enum.Font.Gotham
+textbox.TextSize = 14
+textbox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+textbox.TextColor3 = Color3.fromRGB(255, 255, 255)
+textbox.BorderSizePixel = 0
+textbox.Parent = frame
+
+-- ▶ TOMBOL EKSEKUSI
+local executeButton = Instance.new("TextButton")
+executeButton.Size = UDim2.new(1, -20, 0, 30)
+executeButton.Position = UDim2.new(0, 10, 0, 180)
+executeButton.Text = "▶ Jalankan Script"
+executeButton.Font = Enum.Font.GothamBold
+executeButton.TextSize = 15
+executeButton.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
+executeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+executeButton.BorderSizePixel = 0
+executeButton.Parent = frame
+
+-- 🔽 DROPDOWN TOGGLE
+dropdown.MouseButton1Click:Connect(function()
+    dropdownFrame.Visible = not dropdownFrame.Visible
+    if dropdownFrame.Visible then
+        dropdownFrame.Size = UDim2.new(1, -20, 0, #scriptButtons * 25)
+    else
+        dropdownFrame.Size = UDim2.new(1, -20, 0, 0)
+    end
+end)
+
+-- ▶ EKSEKUSI SCRIPT
+executeButton.MouseButton1Click:Connect(function()
+    local url = textbox.Text
+    if url == "" then
+        textbox.PlaceholderText = "⚠ Masukkan link RAW dulu!"
+        return
+    end
+    pcall(function()
+        loadstring(game:HttpGet(url))()
+    end)
+end)
+
+-- ❌ CLOSE
+closeButton.MouseButton1Click:Connect(function()
+    screenGui:Destroy()
+end)
