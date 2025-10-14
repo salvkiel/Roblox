@@ -1,0 +1,158 @@
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local player = Players.LocalPlayer
+
+-- 🔽 ANIMASI "BY : Salvkiel" 🔽
+do
+	local introGui = Instance.new("ScreenGui")
+	introGui.Name = "IntroAnimation"
+	introGui.ResetOnSpawn = false
+	introGui.Parent = player:WaitForChild("PlayerGui")
+
+	local introLabel = Instance.new("TextLabel")
+	introLabel.Size = UDim2.new(0, 300, 0, 50)
+	introLabel.Position = UDim2.new(0.5, -150, 0.4, 0)
+	introLabel.BackgroundTransparency = 1
+	introLabel.Text = "By : Salvkiel"
+	introLabel.TextColor3 = Color3.fromRGB(40, 40, 40)
+	introLabel.TextScaled = true
+	introLabel.Font = Enum.Font.GothamBold
+	introLabel.Parent = introGui
+
+	local tweenInfoMove = TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true)
+	local tweenMove = TweenService:Create(introLabel, tweenInfoMove, {Position = UDim2.new(0.5, -150, 0.42, 0)})
+	local tweenInfoColor = TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true)
+	local tweenColor = TweenService:Create(introLabel, tweenInfoColor, {TextColor3 = Color3.fromRGB(0, 0, 0)})
+
+	tweenMove:Play()
+	tweenColor:Play()
+
+	task.wait(2)
+	local fadeOut = TweenService:Create(introLabel, TweenInfo.new(0.5), {TextTransparency = 1})
+	fadeOut:Play()
+	fadeOut.Completed:Connect(function()
+		introGui:Destroy()
+	end)
+end
+
+-- 🔽 STATUS 🔽
+local statusValue = ReplicatedStorage:FindFirstChild("AutoFarmStatus")
+if not statusValue then
+	statusValue = Instance.new("BoolValue")
+	statusValue.Name = "AutoFarmStatus"
+	statusValue.Value = false
+	statusValue.Parent = ReplicatedStorage
+end
+
+-- 🔽 GUI UTAMA 🔽
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "AutoFarmGUI"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 220, 0, 160)
+frame.Position = UDim2.new(0.4, -110, 0.5, -80)
+frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+frame.BorderSizePixel = 0
+frame.Active = true
+frame.Draggable = true
+frame.Parent = screenGui
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 15)
+corner.Parent = frame
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 30)
+title.BackgroundTransparency = 1
+title.Text = "Kawah Terjun"
+title.TextColor3 = Color3.new(1, 1, 1)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 16
+title.Parent = frame
+
+local button = Instance.new("TextButton")
+button.Size = UDim2.new(0, 160, 0, 40)
+button.Position = UDim2.new(0.5, -80, 0.5, -20)
+button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+button.Text = "SUMMIT"
+button.TextColor3 = Color3.new(1, 1, 1)
+button.Font = Enum.Font.GothamBold
+button.TextSize = 15
+button.Parent = frame
+
+local buttonCorner = Instance.new("UICorner")
+buttonCorner.CornerRadius = UDim.new(0, 10)
+buttonCorner.Parent = button
+
+-- 🔽 POSISI 🔽
+local position1 = Vector3.new(-120.168, -176.5, 16.251)
+local position2 = Vector3.new(4.814, -171.828, -205.315)
+local position3 = Vector3.new(82.32, -220.201, 219.96)
+
+local teleporting = false
+
+-- 🔽 COUNTDOWN GUI 🔽
+local countdownGui = Instance.new("TextLabel")
+countdownGui.Size = UDim2.new(0, 200, 0, 50)
+countdownGui.Position = UDim2.new(0.5, -100, 0.8, 0)
+countdownGui.BackgroundTransparency = 0.4
+countdownGui.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+countdownGui.TextColor3 = Color3.new(1, 1, 1)
+countdownGui.Font = Enum.Font.GothamBold
+countdownGui.TextScaled = true
+countdownGui.Visible = false
+countdownGui.Parent = screenGui
+
+local function teleportTo(pos)
+	local char = player.Character
+	if char and char:FindFirstChild("HumanoidRootPart") then
+		char.HumanoidRootPart.CFrame = CFrame.new(pos)
+	end
+end
+
+-- 🔽 HITUNG MUNDUR 🔽
+local function startCountdown(duration)
+	countdownGui.Visible = true
+	for i = duration, 1, -1 do
+		local minutes = math.floor(i / 60)
+		local seconds = i % 60
+		countdownGui.Text = string.format("Mulai ulang dalam: %02d:%02d", minutes, seconds)
+		task.wait(1)
+	end
+	countdownGui.Visible = false
+end
+
+-- 🔽 AUTO FARM 🔽
+local function autoFarmLoop()
+	teleportTo(position1)
+	task.wait(0.5)
+	teleportTo(position2)
+	task.wait(0.5)
+	teleportTo(position3)
+	task.wait(0.5)
+
+	-- Sampai posisi terakhir, mulai countdown 3 menit
+	startCountdown(180)
+	autoFarmLoop() -- mulai lagi otomatis
+end
+
+local function toggleAutoFarm(state)
+	teleporting = state
+	statusValue.Value = state
+	if teleporting then
+		button.Text = "BERJALAN..."
+		button.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+		task.spawn(autoFarmLoop)
+	else
+		button.Text = "SUMMIT"
+		button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+	end
+end
+
+button.MouseButton1Click:Connect(function()
+	toggleAutoFarm(not teleporting)
+end)
