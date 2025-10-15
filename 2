@@ -14,19 +14,16 @@ screenGui.Name = "AutoFarmGUI"
 screenGui.ResetOnSpawn = false
 screenGui.Parent = player:WaitForChild("PlayerGui")
 
--- 🔸 Frame Utama
+-- 🔸 Frame Utama (Responsif Tengah Layar)
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 260, 0, 420)
-frame.Position = UDim2.new(0, 20, 0.5, -210)
+frame.Size = UDim2.new(0.7, 0, 0.7, 0) -- 70% lebar & 70% tinggi layar
+frame.Position = UDim2.new(0.5, 0, 0.5, 0) -- Pusat layar
+frame.AnchorPoint = Vector2.new(0.5, 0.5) -- Hitung posisi dari tengah frame
 frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 frame.BorderSizePixel = 0
 frame.Active = true
 frame.Draggable = true
 frame.Parent = screenGui
-
-local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(0, 15)
-corner.Parent = frame
 
 -- 🔸 Title Bar
 local title = Instance.new("TextLabel")
