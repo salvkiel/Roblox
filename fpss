@@ -1,0 +1,39 @@
+-- 🔽 SERVICES 🔽
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local Workspace = game:GetService("Workspace")
+local Lighting = game:GetService("Lighting")
+
+-- 🔽 FUNGSI BOOST FPS LANGSUNG 🔽
+local function boostFPS()
+    -- Lighting sederhana
+    Lighting.GlobalShadows = false
+    Lighting.FogEnd = 1e8
+    Lighting.Brightness = 2
+    Lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
+
+    -- Matikan efek post-processing
+    for _, v in pairs(Lighting:GetChildren()) do
+        if v:IsA("BlurEffect") or v:IsA("ColorCorrectionEffect") 
+        or v:IsA("SunRaysEffect") or v:IsA("BloomEffect") 
+        or v:IsA("DepthOfFieldEffect") then
+            v.Enabled = false
+        end
+    end
+
+    -- Optimasi semua part
+    for _, v in pairs(Workspace:GetDescendants()) do
+        if v:IsA("Part") or v:IsA("MeshPart") or v:IsA("UnionOperation") then
+            v.Material = Enum.Material.Plastic
+            v.Reflectance = 0
+            v.CastShadow = false
+        elseif v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Smoke") or v:IsA("Fire") then
+            v.Enabled = false
+        elseif v:IsA("Decal") or v:IsA("Texture") then
+            v.Transparency = 1
+        end
+    end
+end
+
+-- Jalankan langsung
+boostFPS()
