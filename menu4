@@ -193,10 +193,11 @@ end
 -- CONTOH SCRIPT
 ---------------------------------------------------------------------
 addScriptButton("Anti Lag", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/antilag")
-addScriptButton("Teleport Pemain", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/tele")
+addScriptButton("Teleport Pemain", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/2")
 addScriptButton("Saxer Lucke", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/saxerr")
 addScriptButton("Malaikat", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/malaikatt")
 addScriptButton("Pedaunan", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/pedaunan")
+addScriptButton("Pedaunan", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/atinn")
 
 -- Update canvas size otomatis
 RunService.Heartbeat:Connect(function()
