@@ -193,7 +193,7 @@ end
 -- CONTOH SCRIPT
 ---------------------------------------------------------------------
 addScriptButton("Anti Lag", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/antilag")
-addScriptButton("Teleport Pemain", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/2")
+addScriptButton("Teleport Pemain", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/teleport")
 addScriptButton("Saxer Lucke", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/saxerr")
 addScriptButton("Malaikat", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/malaikatt")
 addScriptButton("Pedaunan", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/pedaunan")
