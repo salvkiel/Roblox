@@ -1,0 +1,176 @@
+-- 🔽 SERVICES 🔽
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+
+---------------------------------------------------------------------
+-- 🔽 GUI UTAMA 🔽
+---------------------------------------------------------------------
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "AutoFarmGUI"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 240, 0, 300)
+frame.Position = UDim2.new(0.4, -120, 0.5, -150)
+frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+frame.BorderSizePixel = 0
+frame.Active = true
+frame.Draggable = true
+frame.Parent = screenGui
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 12)
+corner.Parent = frame
+
+---------------------------------------------------------------------
+-- TITLE BAR (Dapat di-tap)
+---------------------------------------------------------------------
+local titleButton = Instance.new("TextButton")
+titleButton.Size = UDim2.new(1, 0, 0, 40)
+titleButton.Position = UDim2.new(0, 0, 0, 0)
+titleButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+titleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleButton.Font = Enum.Font.GothamBold
+titleButton.TextSize = 18
+titleButton.Text = "💻 Script Loader (Tap to Minimize/Maximize)"
+titleButton.AutoButtonColor = false
+titleButton.Parent = frame
+
+local titleCorner = Instance.new("UICorner")
+titleCorner.CornerRadius = UDim.new(0, 12)
+titleCorner.Parent = titleButton
+
+---------------------------------------------------------------------
+-- SCROLL FRAME (BODY)
+---------------------------------------------------------------------
+local scrollFrame = Instance.new("ScrollingFrame")
+scrollFrame.Size = UDim2.new(1, -20, 1, -50)
+scrollFrame.Position = UDim2.new(0, 10, 0, 45)
+scrollFrame.BackgroundTransparency = 1
+scrollFrame.ScrollBarThickness = 8
+scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+scrollFrame.Parent = frame
+
+local uiListLayout = Instance.new("UIListLayout")
+uiListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+uiListLayout.Padding = UDim.new(0, 10)
+uiListLayout.Parent = scrollFrame
+
+---------------------------------------------------------------------
+-- MINIMIZE / MAXIMIZE LOGIC DENGAN TWEEN
+---------------------------------------------------------------------
+local minimized = false
+local fullSize = UDim2.new(0, 240, 0, 300)
+local minimizedSize = UDim2.new(0, 240, 0, 40)
+local tweenInfo = TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+
+titleButton.MouseButton1Click:Connect(function()
+    minimized = not minimized
+    if minimized then
+        scrollFrame.Visible = false
+        TweenService:Create(frame, tweenInfo, {Size = minimizedSize}):Play()
+    else
+        TweenService:Create(frame, tweenInfo, {Size = fullSize}):Play()
+        wait(0.25)
+        scrollFrame.Visible = true
+    end
+end)
+
+---------------------------------------------------------------------
+-- FUNGSI UNTUK MENAMBAHKAN TOMBOL SCRIPT
+---------------------------------------------------------------------
+local function addScriptButton(name, url)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(1, -20, 0, 40)
+    button.BackgroundColor3 = Color3.fromRGB(100, 0, 0)
+    button.TextColor3 = Color3.new(1, 1, 1)
+    button.Font = Enum.Font.GothamBold
+    button.TextSize = 15
+    button.Text = name
+    button.Parent = scrollFrame
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 6)
+    corner.Parent = button
+
+    button.MouseButton1Click:Connect(function()
+        -- GUI script baru
+        local scriptGui = Instance.new("Frame")
+        scriptGui.Size = UDim2.new(0, 300, 0, 200)
+        scriptGui.Position = UDim2.new(0.5, -150, 0.5, -100)
+        scriptGui.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+        scriptGui.BorderSizePixel = 0
+        scriptGui.Parent = screenGui
+
+        local scriptCorner = Instance.new("UICorner")
+        scriptCorner.CornerRadius = UDim.new(0, 12)
+        scriptCorner.Parent = scriptGui
+
+        -- Title script
+        local scriptTitle = Instance.new("TextLabel")
+        scriptTitle.Size = UDim2.new(1, 0, 0, 30)
+        scriptTitle.Position = UDim2.new(0, 0, 0, 0)
+        scriptTitle.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        scriptTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+        scriptTitle.Font = Enum.Font.GothamBold
+        scriptTitle.TextSize = 16
+        scriptTitle.Text = name
+        scriptTitle.Parent = scriptGui
+
+        local titleCorner = Instance.new("UICorner")
+        titleCorner.CornerRadius = UDim.new(0, 12)
+        titleCorner.Parent = scriptTitle
+
+        -- Tombol close
+        local closeBtn = Instance.new("TextButton")
+        closeBtn.Size = UDim2.new(0, 40, 0, 25)
+        closeBtn.Position = UDim2.new(1, -45, 0, 2)
+        closeBtn.Text = "X"
+        closeBtn.Font = Enum.Font.GothamBold
+        closeBtn.TextSize = 14
+        closeBtn.TextColor3 = Color3.new(1, 1, 1)
+        closeBtn.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
+        closeBtn.Parent = scriptGui
+
+        local closeCorner = Instance.new("UICorner")
+        closeCorner.CornerRadius = UDim.new(0, 6)
+        closeCorner.Parent = closeBtn
+
+        closeBtn.MouseButton1Click:Connect(function()
+            scriptGui:Destroy()
+        end)
+
+        -- Load script dari GitHub
+        local success, response = pcall(function()
+            return game:HttpGet(url)
+        end)
+        if success and response then
+            local loadSuccess, err = pcall(function()
+                loadstring(response)()
+            end)
+            if not loadSuccess then
+                warn("Gagal menjalankan script: "..err)
+            end
+        else
+            warn("Gagal mengambil script dari URL!")
+        end
+    end)
+end
+
+---------------------------------------------------------------------
+-- CONTOH SCRIPT
+---------------------------------------------------------------------
+addScriptButton("Teleport Pemain", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/tele")
+addScriptButton("Saxer Lucke", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/saxerluckefix")
+addScriptButton("Atin", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/atin")
+addScriptButton("Kawah Terjun", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/kawahterjunfix")
+addScriptButton("Malaikat", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/malaikatfix")
+addScriptButton("Pedaunan", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/pedaunan")
+
+-- Update canvas size otomatis
+RunService.Heartbeat:Connect(function()
+    scrollFrame.CanvasSize = UDim2.new(0, 0, 0, uiListLayout.AbsoluteContentSize.Y + 10)
+end)
