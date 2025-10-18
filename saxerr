@@ -189,19 +189,19 @@ local teleportList = {
     {name = "Teleport Pos 2", pos = Vector3.new(-12.149, 336.266, 3131.099), delay = 25},
     {name = "Teleport Pos 3", pos = Vector3.new(-234.331, 401.994, 4034.662), delay = 13},
     {name = "Teleport Pos 4", pos = Vector3.new(-260.452, 339.807, 4382.458), delay = 7},
-    {name = "Teleport Pos 5", pos = Vector3.new(-350.004, 331.38, 4563.691), delay = 27},
+    {name = "Teleport Pos 5", pos = Vector3.new(-350.004, 331.38, 4563.691), delay = 25},
     {name = "Teleport Pos 6", pos = Vector3.new(-863.008, 228.044, 5330.454), delay = 32},
     {name = "Teleport Pos 7", pos = Vector3.new(-1381.331, 504.732, 6360.716), delay = 22},
     {name = "Teleport Pos 8", pos = Vector3.new(-1521.099, 537.663, 6747.521), delay = 12},
-    {name = "Teleport Pos 9", pos = Vector3.new(-1489.38, 546.493, 7075.592), delay = 45},
+    {name = "Teleport Pos 9", pos = Vector3.new(-1489.38, 546.493, 7075.592), delay = 40},
     {name = "Teleport Pos 10", pos = Vector3.new(-892.735, 481.662, 8299.804), delay = 35},
     {name = "Teleport Pos 11", pos = Vector3.new(-497.311, 608.767, 8792.895), delay = 9},
-    {name = "Teleport Pos 12", pos = Vector3.new(-303.358, 611.169, 8947.14), delay = 10},
-    {name = "Teleport Pos 13", pos = Vector3.new(-121.753, 599.254, 9166.275), delay = 10},
-    {name = "Teleport Pos 14", pos = Vector3.new(-9.714, 637.725, 9324.404), delay = 25},
-    {name = "Teleport Pos 15", pos = Vector3.new(214.159, 810.763, 10017.791), delay = 25},
-    {name = "PUNCAK", pos = Vector3.new(546.483, 1310.881, 10933.145), delay = 3},
-    {name = "BASECAMP", pos = Vector3.new(-469.602, 61.187, 544.347), delay = 2},
+    {name = "Teleport Pos 12", pos = Vector3.new(-303.358, 611.169, 8947.14), delay = 9},
+    {name = "Teleport Pos 13", pos = Vector3.new(-121.753, 599.254, 9166.275), delay = 9},
+    {name = "Teleport Pos 14", pos = Vector3.new(-9.714, 637.725, 9324.404), delay = 22},
+    {name = "Teleport Pos 15", pos = Vector3.new(214.159, 810.763, 10017.791), delay = 22},
+    {name = "PUNCAK", pos = Vector3.new(546.483, 1310.881, 10933.145), delay = 4},
+    {name = "BASECAMP", pos = Vector3.new(-469.602, 61.187, 544.347), delay = 5},
 }
 
 -- ====== MEMPERBARUI makeTeleportButton: tambahkan TextBox delay ======
@@ -377,11 +377,8 @@ end
 
 local function autoFarmLoop()
 	while teleporting do
-		-- reset progress di awal loop
-		local totalPos = #teleportList - 1 -- exclude basecamp
-		local currentPos = 0
 		progressBar.Size = UDim2.new(0, 0, 1, 0)
-		progressLabel.Text = "0%"
+		progressLabel.Text = "0s"
 
 		-- ⚡ Mulai dari BASECAMP
 		local basecamp = teleportList[#teleportList]
@@ -396,18 +393,23 @@ local function autoFarmLoop()
 			if not teleporting then break end
 			local data = teleportList[i]
 			if data and data.pos then
-				print(string.format("[AutoFarm] %s | delay %.1f detik", data.name, tonumber(data.delay) or 3))
+				local delayTime = tonumber(data.delay) or 3
+				print(string.format("[AutoFarm] %s | delay %.1f detik", data.name, delayTime))
 				safeTeleportTo(data.pos)
-				task.wait(tonumber(data.delay) or 3)
 
-				-- ✅ Update progress bar
-				currentPos += 1
-				local progress = math.clamp(currentPos / totalPos, 0, 1)
-				local tween = TweenService:Create(progressBar, TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
-					Size = UDim2.new(progress, 0, 1, 0)
-				})
-				tween:Play()
-				progressLabel.Text = string.format("%d%%", math.floor(progress * 100))
+				-- Animasi progress bar berdasarkan waktu delay
+				local elapsed = 0
+				while elapsed < delayTime and teleporting do
+					local progress = elapsed / delayTime
+					progressBar.Size = UDim2.new(progress, 0, 1, 0)
+					progressLabel.Text = string.format("%.1fs", elapsed)
+					task.wait(0.1)
+					elapsed += 0.1
+				end
+
+				-- Akhiri dengan bar penuh dan waktu total
+				progressBar.Size = UDim2.new(1, 0, 1, 0)
+				progressLabel.Text = string.format("%.1fs", delayTime)
 			end
 		end
 
@@ -416,45 +418,31 @@ local function autoFarmLoop()
 		if teleporting and puncak then
 			print("[AutoFarm] Sampai di PUNCAK! Respawn player...")
 			safeTeleportTo(puncak.pos)
-			task.wait(tonumber(puncak.delay) or 3)
+			local delayTime = tonumber(puncak.delay) or 3
 
-			-- isi penuh progress bar
-			local tweenFull = TweenService:Create(progressBar, TweenInfo.new(0.5), {
-				Size = UDim2.new(1, 0, 1, 0)
-			})
-			tweenFull:Play()
-			progressLabel.Text = "100%"
+			local elapsed = 0
+			while elapsed < delayTime and teleporting do
+				local progress = elapsed / delayTime
+				progressBar.Size = UDim2.new(progress, 0, 1, 0)
+				progressLabel.Text = string.format("%.1fs", elapsed)
+				task.wait(0.1)
+				elapsed += 0.1
+			end
 
-			-- respawn player dan mulai ulang loop
+			progressBar.Size = UDim2.new(1, 0, 1, 0)
+			progressLabel.Text = string.format("%.1fs", delayTime)
+
 			respawnPlayer(function()
 				if teleporting then
 					task.spawn(autoFarmLoop)
 				end
 			end)
-			return -- keluar dari loop saat respawn
+			return
 		end
 	end
 
-	-- Jika berhenti manual
 	if not teleporting then
 		button.Text = "SUMMIT"
 		button.BackgroundColor3 = Color3.fromRGB(100, 0, 0)
 	end
 end
-
-local function toggleAutoFarm(state)
-	teleporting = state
-	statusValue.Value = state
-	if teleporting then
-		button.Text = "BERJALAN..."
-		button.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
-		task.spawn(autoFarmLoop)
-	else
-		button.Text = "SUMMIT"
-		button.BackgroundColor3 = Color3.fromRGB(100, 0, 0)
-	end
-end
-
-button.MouseButton1Click:Connect(function()
-	toggleAutoFarm(not teleporting)
-end)
