@@ -5,34 +5,6 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local player = Players.LocalPlayer
 
--- 🔽 ANIMASI INTRO 🔽
-do
-    local introGui = Instance.new("ScreenGui")
-    introGui.Name = "IntroAnimation"
-    introGui.ResetOnSpawn = false
-    introGui.Parent = player:WaitForChild("PlayerGui")
-
-    local introLabel = Instance.new("TextLabel")
-    introLabel.Size = UDim2.new(0, 300, 0, 50)
-    introLabel.Position = UDim2.new(0.5, -150, 0.4, 0)
-    introLabel.BackgroundTransparency = 1
-    introLabel.Text = "By : SALVKIEL"
-    introLabel.TextColor3 = Color3.fromRGB(40, 40, 40)
-    introLabel.TextScaled = true
-    introLabel.Font = Enum.Font.GothamBold
-    introLabel.Parent = introGui
-
-    local tweenMove = TweenService:Create(introLabel, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {Position = UDim2.new(0.5, -150, 0.42, 0)})
-    local tweenColor = TweenService:Create(introLabel, TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {TextColor3 = Color3.fromRGB(0, 0, 0)})
-    tweenMove:Play()
-    tweenColor:Play()
-
-    task.wait(2)
-    local fadeOut = TweenService:Create(introLabel, TweenInfo.new(0.5), {TextTransparency = 1})
-    fadeOut:Play()
-    fadeOut.Completed:Connect(function() introGui:Destroy() end)
-end
-
 -- 🔽 Status AutoFarm 🔽
 local statusValue = ReplicatedStorage:FindFirstChild("AutoFarmStatus") or Instance.new("BoolValue")
 statusValue.Name = "AutoFarmStatus"
