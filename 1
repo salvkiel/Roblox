@@ -1,0 +1,86 @@
+-- 🔽 SERVICES 🔽
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local Workspace = game:GetService("Workspace")
+local Lighting = game:GetService("Lighting")
+local Terrain = Workspace:FindFirstChildOfClass("Terrain")
+local RunService = game:GetService("RunService")
+local UserSettings = UserSettings()
+
+-- 🔽 FUNGSI BOOST FPS 🔽
+local function boostFPS()
+    -- ⚙️ Setting lighting ke mode ringan
+    Lighting.GlobalShadows = false
+    Lighting.FogEnd = 1e8
+    Lighting.Brightness = 1
+    Lighting.EnvironmentDiffuseScale = 0
+    Lighting.EnvironmentSpecularScale = 0
+    Lighting.OutdoorAmbient = Color3.fromRGB(127, 127, 127)
+    Lighting.ClockTime = 12
+    Lighting.ShadowSoftness = 0
+
+    -- 🚫 Matikan semua efek visual
+    for _, v in ipairs(Lighting:GetChildren()) do
+        if v:IsA("BlurEffect") or v:IsA("ColorCorrectionEffect")
+        or v:IsA("SunRaysEffect") or v:IsA("BloomEffect")
+        or v:IsA("DepthOfFieldEffect") then
+            v.Enabled = false
+        end
+    end
+
+    -- 🌫️ Kurangi visual terrain
+    if Terrain then
+        Terrain.WaterWaveSize = 0
+        Terrain.WaterWaveSpeed = 0
+        Terrain.WaterReflectance = 0
+        Terrain.WaterTransparency = 1
+    end
+
+    -- 🔁 Optimasi semua objek dalam Workspace
+    task.defer(function()
+        for _, v in ipairs(Workspace:GetDescendants()) do
+            if v:IsA("BasePart") then
+                v.Material = Enum.Material.Plastic
+                v.Reflectance = 0
+                v.CastShadow = false
+            elseif v:IsA("ParticleEmitter") or v:IsA("Trail")
+                or v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") then
+                v.Enabled = false
+            elseif v:IsA("Decal") or v:IsA("Texture") then
+                v.Transparency = 1
+            elseif v:IsA("MeshPart") then
+                v.RenderFidelity = Enum.RenderFidelity.Performance
+            end
+        end
+    end)
+
+    -- 🧭 Kurangi jarak render & streaming
+    if Workspace:FindFirstChildOfClass("Camera") then
+        Workspace.CurrentCamera.FieldOfView = 70
+    end
+
+    -- ⚡ Nonaktifkan streaming radius besar (kalau game pakai streaming)
+    if Workspace.StreamingEnabled ~= nil then
+        Workspace.StreamingEnabled = true
+        Workspace.StreamingMinRadius = 16
+        Workspace.StreamingTargetRadius = 64
+    end
+
+    -- 🔉 Matikan suara ambient yang berat (opsional)
+    for _, s in ipairs(Workspace:GetDescendants()) do
+        if s:IsA("Sound") and not s.Looped then
+            s.Volume = 0
+        end
+    end
+
+    -- 📉 Kurangi kualitas grafik Roblox client-side
+    pcall(function()
+        local renderSettings = UserSettings:GetService("UserGameSettings")
+        renderSettings.SavedQualityLevel = Enum.SavedQualitySetting.QualityLevel1
+    end)
+
+    print("[✅] Boost FPS aktif — grafik disederhanakan, beban CPU/GPU dikurangi.")
+end
+
+-- 🔽 Jalankan otomatis
+task.spawn(boostFPS)
