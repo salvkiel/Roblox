@@ -1,0 +1,39 @@
+-- ⚔️ KILL AURA / AUTO ATTACK SCRIPT
+-- ✅ Dibuat untuk GitHub Raw & Delta Executor
+-- 📦 Pastikan game punya sistem musuh berbentuk Model dengan Humanoid
+
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+
+-- 🔧 Pengaturan
+local attackRadius = 25     -- Jarak radius serang
+local attackDelay = 0.5     -- Waktu antar serangan (detik)
+local autoAttack = true     -- Aktifkan / nonaktifkan Kill Aura
+
+-- 🔁 Loop utama
+task.spawn(function()
+	while task.wait(attackDelay) do
+		if autoAttack and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+			local root = player.Character.HumanoidRootPart
+			for _, obj in pairs(Workspace:GetChildren()) do
+				if obj:IsA("Model") and obj:FindFirstChild("Humanoid") and obj:FindFirstChild("HumanoidRootPart") then
+					local enemyRoot = obj.HumanoidRootPart
+					local distance = (enemyRoot.Position - root.Position).Magnitude
+					if distance <= attackRadius and obj.Humanoid.Health > 0 then
+						-- Ganti sesuai sistem serangan game kamu:
+						-- Misalnya: RemoteEvent, tool:Activate(), atau klik manual
+						local tool = player.Character:FindFirstChildOfClass("Tool")
+						if tool then
+							tool:Activate() -- Serang otomatis
+						end
+					end
+				end
+			end
+		end
+	end
+end)
+
+-- 🧠 Info di console
+warn("[KILL AURA] Aktif • Radius:", attackRadius, "Delay:", attackDelay)
