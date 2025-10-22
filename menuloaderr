@@ -197,7 +197,9 @@ addScriptButton("Teleport Pemain", "https://raw.githubusercontent.com/salvkiel/R
 addScriptButton("Saxer Lucke", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/sll")
 addScriptButton("Malaikat", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/malaikatt")
 addScriptButton("Pedaunan", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/pedaunan")
-addScriptButton("Atin", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/atinn")
+addScriptButton("Vunny", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/vunyyy")
+addScriptButton("Kahayang", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/kahayang1")
+addScriptButton("Kahayang Auto", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/kahayangauto")
 
 -- Update canvas size otomatis
 RunService.Heartbeat:Connect(function()
