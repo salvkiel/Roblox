@@ -31,7 +31,7 @@ Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 15)
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, 0, 0, 30)
 title.BackgroundTransparency = 1
-title.Text = "Saxer Lucke"
+title.Text = "Elora"
 title.TextColor3 = Color3.new(1, 1, 1)
 title.Font = Enum.Font.GothamBold
 title.TextSize = 16
@@ -126,24 +126,24 @@ end)
 
 -- ====== TELEPORT LIST ======
 local teleportList = {
-	{name = "Teleport Pos 1", pos = Vector3.new(537.319, 9.978, -122,411), delay = 3},
-	{name = "Teleport Pos 2", pos = Vector3.new(394.929, 12.978, 250.156), delay = 3},
-	{name = "Teleport Pos 3", pos = Vector3.new(-33.581, 8.555, 87.187), delay = 3},
-	{name = "Teleport Pos 4", pos = Vector3.new(-41.971, 9.85, 621.557), delay = 3},
-	{name = "Teleport Pos 5", pos = Vector3.new(176.151, 73.423, 715.686), delay = 3},
-	{name = "Teleport Pos 6", pos = Vector3.new(751.006, 83.094, 599.494), delay = 3},
-	{name = "Teleport Pos 7", pos = Vector3.new(782.4, 200.123, 547.915), delay = 3},
-	{name = "Teleport Pos 8", pos = Vector3.new(872.128, 275.85, 569.73), delay = 3},
-	{name = "Teleport Pos 9", pos = Vector3.new(840.8, 371.85, 693.1), delay = 3},
-	{name = "Teleport Pos 10", pos = Vector3.new(1280.865, 623.85, 453.603), delay = 3},
-	{name = "Teleport Pos 11", pos = Vector3.new(2088.136, 749.687, 834.173), delay = 3},
-	{name = "Teleport Pos 12", pos = Vector3.new(1840.335, 964.455, 830.992), delay = 3},
-	{name = "Teleport Pos 13", pos = Vector3.new(1693.721, 1283.55, 1633.706), delay = 3},
-	{name = "Teleport Pos 14", pos = Vector3.new(1526.836, 1319.863, 2287.074), delay = 3},
-	{name = "Teleport Pos 15", pos = Vector3.new(1159.587, 1275.917, 1139.068), delay = 3},
-	{name = "Teleport Pos 16", pos = Vector3.new(1304.11, 1409.15, 1586.765), delay = 3},
-	{name = "PUNCAK", pos = Vector3.new(546.483, 1310.881, 10933.145), delay = 5},
-	{name = "BASECAMP", pos = Vector3.new(-469.602, 61.187, 544.347), delay = 5},
+	{name = "Teleport Pos 1", pos = Vector3.new(537.319, 9.978, -122,411), delay = 1},
+	{name = "Teleport Pos 2", pos = Vector3.new(394.929, 12.978, 250.156), delay = 1},
+	{name = "Teleport Pos 3", pos = Vector3.new(-33.581, 8.555, 87.187), delay = 1},
+	{name = "Teleport Pos 4", pos = Vector3.new(-41.971, 9.85, 621.557), delay = 1},
+	{name = "Teleport Pos 5", pos = Vector3.new(176.151, 73.423, 715.686), delay = 1},
+	{name = "Teleport Pos 6", pos = Vector3.new(751.006, 83.094, 599.494), delay = 1},
+	{name = "Teleport Pos 7", pos = Vector3.new(782.4, 200.123, 547.915), delay = 1},
+	{name = "Teleport Pos 8", pos = Vector3.new(872.128, 275.85, 569.73), delay = 1},
+	{name = "Teleport Pos 9", pos = Vector3.new(840.8, 371.85, 693.1), delay = 1},
+	{name = "Teleport Pos 10", pos = Vector3.new(1280.865, 623.85, 453.603), delay = 1},
+	{name = "Teleport Pos 11", pos = Vector3.new(2088.136, 749.687, 834.173), delay = 1},
+	{name = "Teleport Pos 12", pos = Vector3.new(1840.335, 964.455, 830.992), delay = 1},
+	{name = "Teleport Pos 13", pos = Vector3.new(1693.721, 1283.55, 1633.706), delay = 1},
+	{name = "Teleport Pos 14", pos = Vector3.new(1526.836, 1319.863, 2287.074), delay = 1},
+	{name = "Teleport Pos 15", pos = Vector3.new(1159.587, 1275.917, 1139.068), delay = 1},
+	{name = "Teleport Pos 16", pos = Vector3.new(1304.11, 1409.15, 1586.765), delay = 1},
+	{name = "PUNCAK", pos = Vector3.new(1047.796, 1544.013, 1516.684), delay = 2},
+	{name = "BASECAMP", pos = Vector3.new(-469.602, 61.187, 544.347), delay = 3},
 }
 
 -- ====== FUNKSI PENDUKUNG ======
