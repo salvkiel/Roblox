@@ -9,7 +9,7 @@ local player = Players.LocalPlayer
 local teleportList = {
     {name = "Teleport Pos 1", pos = Vector3.new(537.319, 9.978, -122,411)},
     {name = "Teleport Pos 2", pos = Vector3.new(394.929, 12.978, 250.156)},
-    {name = "Teleport Pos 3", pos = Vector3.new(33.581, 8.555, 87.187)},
+    {name = "Teleport Pos 3", pos = Vector3.new(-33.581, 8.555, 87.187)},
     {name = "Teleport Pos 4", pos = Vector3.new(-41.971, 9.85, 621.557)},
     {name = "Teleport Pos 5", pos = Vector3.new(176.151, 73.423, 715.686)},
     {name = "Teleport Pos 6", pos = Vector3.new(751.006, 83.094, 599.494)},
