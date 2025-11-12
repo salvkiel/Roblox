@@ -143,7 +143,7 @@ local teleportList = {
 	{name = "Teleport Pos 15", pos = Vector3.new(1159.587, 1275.917, 1139.068), delay = 1},
 	{name = "Teleport Pos 16", pos = Vector3.new(1304.11, 1409.15, 1586.765), delay = 1},
 	{name = "PUNCAK", pos = Vector3.new(1047.796, 1544.013, 1516.684), delay = 2},
-	{name = "BASECAMP", pos = Vector3.new(-469.602, 61.187, 544.347), delay = 3},
+	{name = "BASECAMP", pos = Vector3.new(765.509, 11.15, -35.805), delay = 3},
 }
 
 -- ====== FUNKSI PENDUKUNG ======
