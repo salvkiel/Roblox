@@ -217,7 +217,7 @@ for idx, data in ipairs(teleportList) do
 	makeTeleportButton(data.name, data.pos, idx)
 end
 
--- ====== AUTO FARM LOOP DENGAN RESPAWN ======
+-- ====== AUTO FARM LOOP TANPA RESPAWN (TELEPORT KE POS 1) ======
 local function autoFarmLoop()
 	while teleporting do
 		progressBar.Size = UDim2.new(0, 0, 1, 0)
@@ -235,27 +235,23 @@ local function autoFarmLoop()
 		end
 
 		-- ====== PUNCAK ======
-		local puncak = teleportList[#teleportList - 1]
-		if teleporting and puncak then
-			safeTeleportTo(puncak.pos)
-			runProgressTimer(tonumber(puncak.delay) or 3)
-		end
+        local puncak = teleportList[#teleportList - 1]
+        if teleporting and puncak then
+            safeTeleportTo(puncak.pos)
+            runProgressTimer(tonumber(puncak.delay) or 3)
+        end
 
-		-- ====== ✨ FITUR BARU: RESPAWN OTOMATIS SETELAH PUNCAK ======
-		if teleporting then
-			local char = player.Character
-			local hum = char and char:FindFirstChild("Humanoid")
+        -- ====== TELEPORT ULANG KE POS 1 (tanpa respawn) ======
+        if teleporting then
+            local pos1 = teleportList[1]
+            if pos1 then
+                safeTeleportTo(pos1.pos)
+                runProgressTimer(tonumber(pos1.delay) or 2)
+            end
 
-			if hum then
-				hum.Health = 0  -- respawn karakter
-			end
-
-			player.CharacterAdded:Wait()
-			task.wait(1)
-
-			lastManualIndex = 1
-			continue
-		end
+            lastManualIndex = 1
+            continue
+        end
 	end
 end
 
