@@ -137,7 +137,7 @@ local teleportList = {
 	{name = "Teleport Pos 9", pos = Vector3.new(-188.465, 638.268, 7086.427), delay = 1},
 	{name = "Teleport Pos 10", pos = Vector3.new(-518.465, 682.219, 8365.428), delay = 1},
 	{name = "Teleport Pos 11", pos = Vector3.new(-392.465, 594.293, 10043.428), delay = 1},
-	{name = "Teleport Pos 12", pos = Vector3.new(1164.535, 594.293, 100064.428), delay = 1},
+	{name = "Teleport Pos 12", pos = Vector3.new(1164.535, 594.293, 10064.428), delay = 1},
 	{name = "Teleport Pos 13", pos = Vector3.new(1156.034, 610.293, 11704.929), delay = 1},
 	{name = "Teleport Pos 14", pos = Vector3.new(1140.573, 610.293, 12819.764), delay = 1},
 	{name = "Teleport Pos 15", pos = Vector3.new(1110.771, 594.293, 14978.436), delay = 1},
