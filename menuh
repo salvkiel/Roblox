@@ -194,7 +194,7 @@ end
 ---------------------------------------------------------------------
 addScriptButton("Anti Lag", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/1")
 addScriptButton("Teleport Pemain", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/teleport")
-addScriptButton("Aetheria", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/aeteria")
+addScriptButton("Aetheria", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/aetheria")
 addScriptButton("Elora", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/elor")
 addScriptButton("Wayang", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/way")
 addScriptButton("Malaikat", "https://raw.githubusercontent.com/salvkiel/Roblox/refs/heads/main/malaikatt")
