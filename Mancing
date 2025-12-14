@@ -134,6 +134,7 @@ local teleportList = {
 	{name = "Classic Island", pos = Vector3.new(1257.575, 6.5, 2839.325), delay = 1},
 	{name = "Crater Island", pos = Vector3.new(955.195, 28.434, 4945.949), delay = 1},
 	{name = "Ancient Jungle", pos = Vector3.new(1479.599, 13.535, -501.288), delay = 1},
+	{name = "Ancient Jungle Dalam", pos = Vector3.new(1475.852, -25.75, -631.183), delay = 1},
 	{name = "Esoteric Depths", pos = Vector3.new(3241.443, -1304.397, 1397.021), delay = 1},
 	{name = "Lost Isle", pos = Vector3.new(-3719.812, -137.565, -1037.327), delay = 1},
 }
