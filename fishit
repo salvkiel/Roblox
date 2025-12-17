@@ -129,7 +129,7 @@ local teleportList = {
   {name = "Basecamp", pos = Vector3.new(27.17, 23.69, 2897.826), delay = 1},
 	{name = "Kohana Volcano", pos = Vector3.new(-622.142, 73.855, 133.024), delay = 1},
 	{name = "Coral Reefs", pos = Vector3.new(-3046.538, 43.310, 2383.316), delay = 1},
-	{name = "Tropical Grove", pos = Vector3.new(-2003.587, -118.530, 3783.388), delay = 1},
+	{name = "Tropical Grove", pos = Vector3.new(-2069.368, 28.436, 3745.505), delay = 1},
 	{name = "Weather Machine", pos = Vector3.new(-1521.619, 4.216, 1875.838), delay = 1},
 	{name = "Classic Island", pos = Vector3.new(1358.575, 41, 2805.825), delay = 1},
 	{name = "Crater Island", pos = Vector3.new(1133.12, 66.939, 5214.568), delay = 1},
@@ -138,7 +138,7 @@ local teleportList = {
 	{name = "Esoteric Depths", pos = Vector3.new(3209.805, -1204.256, 1262.463), delay = 1},
 	{name = "Lost Isle Atas", pos = Vector3.new(-3652.372, -138.373, -864.559), delay = 1},
 	{name = "Lost Isle Dalam", pos = Vector3.new(-3684.604, -269.014, -1606.513), delay = 1},
-	{name = "Christmas Island", pos = Vector3.new(1092.174, 86.568, 1416.307), delay = 1},
+	{name = "Christmas Island", pos = Vector3.new(1029.703, 22.756, 1519.384), delay = 1},
 }
 
 -- ====== FUNKSI PENDUKUNG ======
